@@ -52,30 +52,77 @@
     [6, 5],
     [6, 6],
   ];
+  const faces = ["", "✦", "✦ ✦", "✦✦✦", "✦ ✦\n✦ ✦", "✦ ✦\n✦\n✦ ✦", "✦✦✦\n✦✦✦"];
 
-  let crate = $state([...sets]);
+  let crate = $state([...sets.slice(1)]);
   let placers = $state([[], []]);
+  let track = $state([...sets[0]]);
 
   function shuffle() {
     crate.sort(() => Math.random() - 0.5);
   }
-
-  onMount(() => {
+  function restart() {
+    crate = [...sets];
     shuffle();
+    track = crate.pop();
     placers.forEach((placer, index) => {
       placers[index] = [crate.pop(), crate.pop(), crate.pop(), crate.pop(), crate.pop()];
     });
+  }
+
+  onMount(() => {
+    restart();
   });
 </script>
 
-<div class="grid grid-cols-2">
-  {#each placers as placer}
-    <div class="flex flex-wrap">
-      {#each placer as domi}
-        <div class="px-2 border">
-          {domi[0]}
-          {domi[1]}
-        </div>
+<div class="flex flex-wrap justify-center gap-5 py-5">
+  <button
+    class="underline underline-offset-4"
+    onclick={() => {
+      restart();
+    }}>Restart</button
+  >
+</div>
+
+<div class="flex flex-wrap justify-center gap-3 pb-5 text-center">
+  <div class="table-row border-2 border-dashed divide-x-2 divide-dashed">
+    {#each track as face}
+      <div class="table-cell align-middle w-12 h-12 whitespace-pre overflow-hidden leading-none">
+        {faces[face]}
+      </div>
+    {/each}
+  </div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-5 text-center">
+  {#each placers as placer, index}
+    <div class="flex flex-wrap justify-center gap-3">
+      <div class="">
+        <span class="">Player {index + 1}</span><br />
+        <button
+          class=" underline underline-offset-4"
+          onclick={() => {
+            placers[index].push(crate.pop());
+          }}
+        >
+          Draw
+        </button>
+      </div>
+      {#each placer as domino, idx}
+        <button
+          class="table-row border-2 divide-x-2"
+          onclick={() => {
+            if (track[0] == domino[0] || track[1] == domino[1]) {
+              track = placers[index].splice(idx, 1)[0];
+            }
+          }}
+        >
+          {#each domino as face}
+            <div class="table-cell align-middle w-12 h-12 whitespace-pre overflow-hidden leading-none">
+              {faces[face]}
+            </div>
+          {/each}
+        </button>
       {/each}
     </div>
   {/each}
