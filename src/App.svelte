@@ -1,24 +1,82 @@
 <script>
+  import { onMount } from "svelte";
+
   const sets = [
-    [0,0],[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],
-    [1,0],[1,1],[1,2],[1,3],[1,4],[1,5],[1,6],
-    [2,0],[2,1],[2,2],[2,3],[2,4],[2,5],[2,6],
-    [3,0],[3,1],[3,2],[3,3],[3,4],[3,5],[3,6],
-    [4,0],[4,1],[4,2],[4,3],[4,4],[4,5],[4,6],
-    [5,0],[5,1],[5,2],[5,3],[5,4],[5,5],[5,6],
-    [6,0],[6,1],[6,2],[6,3],[6,4],[6,5],[6,6],
-  ]
+    [0, 0],
+    [0, 1],
+    [0, 2],
+    [0, 3],
+    [0, 4],
+    [0, 5],
+    [0, 6],
+    [1, 0],
+    [1, 1],
+    [1, 2],
+    [1, 3],
+    [1, 4],
+    [1, 5],
+    [1, 6],
+    [2, 0],
+    [2, 1],
+    [2, 2],
+    [2, 3],
+    [2, 4],
+    [2, 5],
+    [2, 6],
+    [3, 0],
+    [3, 1],
+    [3, 2],
+    [3, 3],
+    [3, 4],
+    [3, 5],
+    [3, 6],
+    [4, 0],
+    [4, 1],
+    [4, 2],
+    [4, 3],
+    [4, 4],
+    [4, 5],
+    [4, 6],
+    [5, 0],
+    [5, 1],
+    [5, 2],
+    [5, 3],
+    [5, 4],
+    [5, 5],
+    [5, 6],
+    [6, 0],
+    [6, 1],
+    [6, 2],
+    [6, 3],
+    [6, 4],
+    [6, 5],
+    [6, 6],
+  ];
 
-  let crate = $state([...sets])
-  let placers = $state([])
+  let crate = $state([...sets]);
+  let placers = $state([[], []]);
 
-  function shuffle () {
-    crate.sort(() => Math.random() - 0.5)
+  function shuffle() {
+    crate.sort(() => Math.random() - 0.5);
   }
 
-  shuffle()
+  onMount(() => {
+    shuffle();
+    placers.forEach((placer, index) => {
+      placers[index] = [crate.pop(), crate.pop(), crate.pop(), crate.pop(), crate.pop()];
+    });
+  });
 </script>
 
-{JSON.stringify(crate)}
-<div class="grid">
+<div class="grid grid-cols-2">
+  {#each placers as placer}
+    <div class="flex flex-wrap">
+      {#each placer as domi}
+        <div class="px-2 border">
+          {domi[0]}
+          {domi[1]}
+        </div>
+      {/each}
+    </div>
+  {/each}
 </div>
